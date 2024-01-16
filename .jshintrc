@@ -1,0 +1,35 @@
+{
+  // Variable-related concerns
+  "freeze": true,
+  "futurehostile": true,
+  "undef": true,
+  "unused": "vars",
+  "varstmt": true,
+  
+  // Language version concerns
+  "strict": "global",
+  "esversion": 6,
+  
+  // Misceallaneous enforcement
+  "leanswitch": true,
+  "noarg": true,
+  
+  // style options noted as "deprecated" (the corresponding warnings will be removed)
+  "sub": true,
+  "laxbreak": true,
+  
+  // Environment we are running in
+  "browser": true,
+  "devel": true,
+  "predef": [
+    "AudioContext",
+    "AudioWorkletNode",
+    
+    "define",
+    "requirejs",
+
+    "jasmineRequire",
+    
+    "measviz"
+  ]
+}

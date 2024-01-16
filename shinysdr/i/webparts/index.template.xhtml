@@ -1,0 +1,111 @@
+<!--
+  Copyright 2013, 2014, 2015, 2016 Kevin Reid and the ShinySDR contributors
+  
+  This file is part of ShinySDR.
+  
+  ShinySDR is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  ShinySDR is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with ShinySDR.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:t="http://twistedmatrix.com/ns/twisted.web.template/0.1"
+    lang="en"
+    class="pane-structured-page"><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title t:render="title"></title>
+  <link rel="manifest" href="/client/web-app-manifest.json" />
+  <link rel="stylesheet" href="/client/ui.css" />
+  <link rel="stylesheet" data-widget="ThemeApplier" data-target="client.theme" />
+  <meta name="viewport" content="width=device-width" />
+</head><body class="pane-structured-body main-not-yet-run">
+
+<dialog open="" id="loading-information-dialog">
+  <progress id="loading-information-progress" value="0"></progress>
+  <pre id="loading-information-text">JS not loaded</pre>
+</dialog>
+<script>
+  document.getElementById('loading-information-text').textContent = 'Loading client…';
+  document.getElementById('loading-information-progress').value = 0.01;
+</script>
+
+<shinysdr-pane id="section-system-menu" class="pane-type-mini" visible="true">
+  <h2>ShinySDR</h2>
+  <div class="frame">
+    <ul class="system-menu-list" id="shinysdr-pane-list">
+    </ul>
+    <ul class="system-menu-list">
+      <li><a href="/manual/">ShinySDR Manual</a></li>
+      <li><a href="flow-graph">Debug: flow graph</a></li>
+    </ul>
+    <details class="panel frame" id="client-audio" data-widget="PickWidget" data-target="audio">
+      <summary>Audio stream</summary>
+    </details>
+    <div data-widget="Select" data-target="client.theme" title="Theme"></div>
+  </div>
+</shinysdr-pane>
+
+<shinysdr-pane id="section-spectrum" class="pane-type-stretchy" visible="true">
+  <h2>RF Spectrum <span data-target="root_object.monitor" data-widget="MonitorQuickOptions"></span></h2>
+  <div id="rf-spectrum-monitor" data-widget="Monitor" data-target="root_object.monitor" data-is-rf-spectrum=""></div>
+</shinysdr-pane>
+
+<shinysdr-pane id="section-audio-spectrum" class="pane-type-stretchy" visible="false">
+  <h2>Audio Spectrum <span data-target="audio.monitor" data-widget="MonitorQuickOptions"></span></h2>
+  <div id="audio-spectrum-monitor" data-widget="Monitor" data-target="audio.monitor"></div>
+</shinysdr-pane>
+
+<shinysdr-pane id="section-map" class="pane-type-stretchy" visible="false">
+  <h2>Map</h2>
+  <div id="map"></div>
+</shinysdr-pane>
+
+<shinysdr-pane id="section-telemetry" class="pane-type-sidebar" visible="false">
+  <h2>Telemetry</h2>
+  <div class="frame" data-widget="PickWidget" data-target="root_object.telemetry_store"></div>
+</shinysdr-pane>
+
+<shinysdr-pane id="section-radio" class="pane-type-sidebar" visible="true">
+  <h2>Radio Config</h2>
+  <div data-widget="Top" data-target="root_object" id="_radio"></div>
+</shinysdr-pane>
+
+<shinysdr-pane id="section-db" class="pane-type-sidebar" visible="true">
+  <h2>Frequency DB</h2>
+  <div class="frame pane-content-also-vertical-stretch">
+    <div class="panel" data-widget="RecordDetails" data-target="actions.selectedRecord"></div>
+    <div class="panel" data-widget="FreqList" id="freqlist"></div>
+    <div class="panel">
+      <details class="frame" id="choose-databases">
+        <summary>Choose databases</summary>
+        <div data-widget="PickWidget" data-target="client.databases"></div>
+      </details>
+    </div>
+  </div>
+</shinysdr-pane>
+
+<script src="/client/require.js"></script>
+<script>
+  'use strict';
+  requirejs.config({
+    baseUrl: "/client",
+  });
+  requirejs(['main'], function (main) {
+    main({
+      stateUrl: <t:transparent t:render='quoted_state_url'/>,
+      audioUrl: <t:transparent t:render='quoted_audio_url'/>,
+      databasesUrl: 'dbs/',
+      writableDatabaseUrl: 'wdb/',
+    });
+  });
+</script>
+</body></html>

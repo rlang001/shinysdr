@@ -1,0 +1,58 @@
+<!doctype html>
+<!--
+  Copyright 2013, 2014, 2015, 2016 Kevin Reid and the ShinySDR contributors
+  
+  This file is part of ShinySDR.
+  
+  ShinySDR is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  ShinySDR is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with ShinySDR.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html><head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <title>ShinySDR — Client Tests</title>
+  <link rel="manifest" href="../client/web-app-manifest.json">
+  <link rel="stylesheet" href="jasmine/jasmine.css">
+  <script src="jasmine/jasmine.js"></script>
+  <script src="jasmine/jasmine-html.js"></script>
+  <script src="../client/require.js"></script>
+</head><body>
+  <script>
+    require.config({
+      baseUrl: '/client/'
+    });
+    
+    requirejs(['network', '/test/jasmine-glue.js',], (network, {ji, start}) => {
+      network.externalGet('t/', 'document').then(indexDoc => {
+        const testUrls = [];
+        Array.prototype.forEach.call(indexDoc.querySelectorAll('a[href]'), anchor => {
+          var url = anchor.href;
+          if (/\/test_.*\.js$/.test(url)) {
+            testUrls.push(url);
+          }
+        });
+        requirejs(testUrls, (...results) => {
+          // requirejs doesn't tell us about e.g. syntax errors in the file. So check for a token return value.
+          ji.describe('test suite', () => {
+            testUrls.forEach((url, index) => {
+              ji.it(url + ' should have loaded successfully', () => {
+                ji.expect(results[index]).toBe('ok');
+              });
+            });
+          });
+          
+          start();
+        });
+      });
+    });
+  </script>
+</body></html>
